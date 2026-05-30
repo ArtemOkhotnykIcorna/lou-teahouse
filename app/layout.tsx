@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
+
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "GTM-NJMQMZQC";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -30,7 +33,18 @@ export default function RootLayout({
       lang="uk"
       className={`${cormorant.variable} ${dmSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-cream-50 text-tea-900">{children}</body>
+      <GoogleTagManager gtmId={GTM_ID} />
+      <body className="min-h-full bg-cream-50 text-tea-900">
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        {children}
+      </body>
     </html>
   );
 }
