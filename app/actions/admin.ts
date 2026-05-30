@@ -7,7 +7,7 @@ import {
   destroyAdminSession,
   requireAdmin,
 } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { slugify } from "@/lib/utils";
 
 export async function adminLogin(
@@ -31,6 +31,7 @@ export async function adminLogout() {
 
 export async function createCategory(formData: FormData) {
   await requireAdmin();
+  const db = await getDb();
 
   const name = formData.get("name") as string;
   const description = (formData.get("description") as string) || null;
@@ -51,6 +52,7 @@ export async function createCategory(formData: FormData) {
 
 export async function updateCategory(formData: FormData) {
   await requireAdmin();
+  const db = await getDb();
 
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
@@ -71,6 +73,7 @@ export async function updateCategory(formData: FormData) {
 
 export async function deleteCategory(formData: FormData) {
   await requireAdmin();
+  const db = await getDb();
 
   const id = formData.get("id") as string;
   await db.category.delete({ where: { id } });
@@ -82,6 +85,7 @@ export async function deleteCategory(formData: FormData) {
 
 export async function createProduct(formData: FormData) {
   await requireAdmin();
+  const db = await getDb();
 
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
@@ -119,6 +123,7 @@ export async function createProduct(formData: FormData) {
 
 export async function updateProduct(formData: FormData) {
   await requireAdmin();
+  const db = await getDb();
 
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
@@ -156,6 +161,7 @@ export async function updateProduct(formData: FormData) {
 
 export async function deleteProduct(formData: FormData) {
   await requireAdmin();
+  const db = await getDb();
 
   const id = formData.get("id") as string;
   await db.product.delete({ where: { id } });
@@ -167,6 +173,7 @@ export async function deleteProduct(formData: FormData) {
 
 export async function updateOrderStatus(formData: FormData) {
   await requireAdmin();
+  const db = await getDb();
 
   const id = formData.get("id") as string;
   const status = formData.get("status") as string;

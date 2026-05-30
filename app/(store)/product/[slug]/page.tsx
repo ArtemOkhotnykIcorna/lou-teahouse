@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { formatPrice } from "@/lib/utils";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { ProductCard } from "@/components/shop/ProductCard";
@@ -14,6 +14,7 @@ interface ProductPageProps {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
+  const db = await getDb();
 
   const product = await db.product.findUnique({
     where: { slug },

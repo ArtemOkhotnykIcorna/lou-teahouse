@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { Hero } from "@/components/home/Hero";
 import { CategoryCard } from "@/components/shop/CategoryCard";
 import { ProductCard } from "@/components/shop/ProductCard";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Leaf, Truck, Shield, Heart } from "lucide-react";
 
 export default async function HomePage() {
+  const db = await getDb();
   const [categories, featuredProducts] = await Promise.all([
     db.category.findMany({ orderBy: { sortOrder: "asc" }, take: 4 }),
     db.product.findMany({

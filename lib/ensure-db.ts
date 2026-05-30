@@ -9,18 +9,18 @@ let ensured = false;
 
 function resolveDbPath(): string {
   const url = process.env.DATABASE_URL ?? "file:./dev.db";
-  const filePath = url.replace("file:", "");
+  const filePath = url.replace(/^file:/, "");
   return path.isAbsolute(filePath)
     ? filePath
     : path.join(process.cwd(), filePath);
 }
 
-function serverlessEnv(): NodeJS.ProcessEnv {
-  return {
-    ...process.env,
-    HOME: process.env.HOME ?? "/tmp",
-    npm_config_cache: process.env.npm_config_cache ?? "/tmp/.npm",
-  };
+function getBundledDbPath(): string {
+  return path.join(process.cwd(), "data", "lou-store.db");
+}
+
+function isServerlessRuntime(): boolean {
+  return resolveDbPath().startsWith("/tmp");
 }
 
 function runPrismaMigrateDeploy(): void {
@@ -33,8 +33,9 @@ function runPrismaMigrateDeploy(): void {
   );
 
   execFileSync(process.execPath, [prismaCli, "migrate", "deploy"], {
-    env: serverlessEnv(),
+    env: process.env,
     stdio: "pipe",
+    cwd: process.cwd(),
   });
 }
 
@@ -50,8 +51,25 @@ export async function ensureDatabase(): Promise<void> {
 
   const dbPath = resolveDbPath();
   const dir = path.dirname(dbPath);
+
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
+  }
+
+  if (isServerlessRuntime()) {
+    if (fs.existsSync(dbPath)) {
+      return;
+    }
+
+    const bundled = getBundledDbPath();
+    if (fs.existsSync(bundled)) {
+      fs.copyFileSync(bundled, dbPath);
+      return;
+    }
+
+    console.warn(
+      `[db] Bundled database missing at ${bundled}, falling back to migrate`
+    );
   }
 
   runPrismaMigrateDeploy();

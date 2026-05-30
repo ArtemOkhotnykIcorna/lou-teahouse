@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { updateProduct } from "@/app/actions/admin";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -12,6 +12,7 @@ interface EditProductPageProps {
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
   const { id } = await params;
+  const db = await getDb();
 
   const [product, categories] = await Promise.all([
     db.product.findUnique({ where: { id } }),

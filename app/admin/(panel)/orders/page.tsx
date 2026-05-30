@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { formatPrice } from "@/lib/utils";
 import { OrderStatusSelect } from "@/components/admin/OrderStatusSelect";
 
@@ -20,6 +20,7 @@ const paymentMethodLabels: Record<string, string> = {
 };
 
 export default async function AdminOrdersPage() {
+  const db = await getDb();
   const orders = await db.order.findMany({
     orderBy: { createdAt: "desc" },
     include: {

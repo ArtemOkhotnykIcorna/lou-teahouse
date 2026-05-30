@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { createProduct } from "@/app/actions/admin";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export default async function NewProductPage() {
+  const db = await getDb();
   const categories = await db.category.findMany({
     orderBy: { sortOrder: "asc" },
   });

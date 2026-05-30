@@ -2,6 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.31.38"],
+  outputFileTracingIncludes: {
+    "/*": [
+      "./data/lou-store.db",
+      "./node_modules/prisma/build/index.js",
+      "./prisma/migrations/**/*",
+    ],
+  },
   experimental: {
     viewTransition: true,
   },

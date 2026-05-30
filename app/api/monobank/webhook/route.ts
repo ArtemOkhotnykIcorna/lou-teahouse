@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 
 interface WebhookPayload {
   invoiceId: string;
@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  const db = await getDb();
   const order = await db.order.findUnique({
     where: { orderNumber: payload.reference },
   });

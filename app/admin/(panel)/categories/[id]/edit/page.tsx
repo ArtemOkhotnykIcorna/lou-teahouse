@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { updateCategory } from "@/app/actions/admin";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -14,6 +14,7 @@ export default async function EditCategoryPage({
   params,
 }: EditCategoryPageProps) {
   const { id } = await params;
+  const db = await getDb();
   const category = await db.category.findUnique({ where: { id } });
 
   if (!category) notFound();

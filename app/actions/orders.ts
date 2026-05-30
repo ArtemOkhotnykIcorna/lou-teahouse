@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { generateOrderNumber } from "@/lib/utils";
 import { createMonobankInvoice, getAppUrl } from "@/lib/monobank";
 import { PICKUP_ADDRESS, PICKUP_CITY } from "@/lib/novaposhta";
@@ -38,6 +38,7 @@ export async function createOrder(data: {
     }
   }
 
+  const db = await getDb();
   const productIds = data.items.map((i) => i.productId);
   const products = await db.product.findMany({
     where: { id: { in: productIds } },

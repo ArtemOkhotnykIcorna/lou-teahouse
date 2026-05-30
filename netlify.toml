@@ -1,6 +1,8 @@
 [build]
-  command = "npm run build"
+  command = "npm run build:netlify"
 
 [build.environment]
   NODE_VERSION = "22"
+
+[context.all.environment]
   DATABASE_URL = "file:/tmp/lou-store.db"

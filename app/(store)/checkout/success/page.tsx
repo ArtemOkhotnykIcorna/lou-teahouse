@@ -1,7 +1,7 @@
 import { CheckCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { formatPrice } from "@/lib/utils";
 
 interface SuccessPageProps {
@@ -24,6 +24,7 @@ export default async function CheckoutSuccessPage({
   searchParams,
 }: SuccessPageProps) {
   const { order: orderNumber } = await searchParams;
+  const db = await getDb();
 
   const order = orderNumber
     ? await db.order.findUnique({ where: { orderNumber } })

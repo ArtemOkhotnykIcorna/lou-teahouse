@@ -1,9 +1,10 @@
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { formatPrice } from "@/lib/utils";
 import { Package, FolderOpen, ShoppingCart, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export default async function AdminDashboard() {
+  const db = await getDb();
   const [productCount, categoryCount, orderCount, recentOrders, totalRevenue] =
     await Promise.all([
       db.product.count(),

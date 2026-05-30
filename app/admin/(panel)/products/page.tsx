@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { deleteProduct } from "@/app/actions/admin";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 
 export default async function AdminProductsPage() {
+  const db = await getDb();
   const products = await db.product.findMany({
     include: { category: true },
     orderBy: { createdAt: "desc" },

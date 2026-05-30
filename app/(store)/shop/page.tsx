@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import Link from "next/link";
@@ -10,6 +10,7 @@ interface ShopPageProps {
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const { category: categorySlug } = await searchParams;
+  const db = await getDb();
 
   const categories = await db.category.findMany({
     orderBy: { sortOrder: "asc" },
