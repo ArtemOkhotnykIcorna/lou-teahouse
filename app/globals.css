@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root {
+  --cream-50: #fdfbf7;
+  --cream-100: #f7f2ea;
+  --cream-200: #ede4d6;
+  --cream-300: #ddd0bc;
+  --tea-400: #a8b89a;
+  --tea-500: #8b9a7b;
+  --tea-600: #6b7d5e;
+  --tea-700: #526347;
+  --tea-800: #3d4a35;
+  --tea-900: #2a3325;
+}
+
+@theme inline {
+  --color-cream-50: var(--cream-50);
+  --color-cream-100: var(--cream-100);
+  --color-cream-200: var(--cream-200);
+  --color-cream-300: var(--cream-300);
+  --color-tea-400: var(--tea-400);
+  --color-tea-500: var(--tea-500);
+  --color-tea-600: var(--tea-600);
+  --color-tea-700: var(--tea-700);
+  --color-tea-800: var(--tea-800);
+  --color-tea-900: var(--tea-900);
+  --font-serif: var(--font-cormorant);
+  --font-sans: var(--font-dm-sans);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--cream-50);
+  color: var(--tea-900);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--tea-500);
+  color: var(--cream-50);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* View transition support */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+}
