@@ -1,6 +1,4 @@
-import { adminLogin } from "@/app/actions/admin";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { AdminLoginForm } from "@/components/admin/AdminLoginForm";
 import { Leaf } from "lucide-react";
 
 export default function AdminLoginPage() {
@@ -15,22 +13,7 @@ export default function AdminLoginPage() {
           <p className="text-tea-600 mt-2">Введіть пароль для входу</p>
         </div>
 
-        <form
-          action={adminLogin}
-          className="bg-cream-50 rounded-3xl p-8 shadow-sm border border-cream-200 space-y-5"
-        >
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            label="Пароль"
-            required
-            placeholder="••••••••"
-          />
-          <Button type="submit" className="w-full" size="lg">
-            Увійти
-          </Button>
-        </form>
+        <AdminLoginForm />
       </div>
     </div>
   );
