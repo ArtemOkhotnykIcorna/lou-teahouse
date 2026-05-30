@@ -1,6 +1,9 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient } from "@/lib/generated/prisma/client";
+import { seedDatabase } from "@/lib/seed-db";
 
 let ensured = false;
 
@@ -10,6 +13,35 @@ function resolveDbPath(): string {
   return path.isAbsolute(filePath)
     ? filePath
     : path.join(process.cwd(), filePath);
+}
+
+function serverlessEnv(): NodeJS.ProcessEnv {
+  return {
+    ...process.env,
+    HOME: process.env.HOME ?? "/tmp",
+    npm_config_cache: process.env.npm_config_cache ?? "/tmp/.npm",
+  };
+}
+
+function runPrismaMigrateDeploy(): void {
+  const prismaCli = path.join(
+    process.cwd(),
+    "node_modules",
+    "prisma",
+    "build",
+    "index.js"
+  );
+
+  execFileSync(process.execPath, [prismaCli, "migrate", "deploy"], {
+    env: serverlessEnv(),
+    stdio: "pipe",
+  });
+}
+
+function createPrismaClient() {
+  const url = process.env.DATABASE_URL ?? "file:./dev.db";
+  const adapter = new PrismaBetterSqlite3({ url });
+  return new PrismaClient({ adapter });
 }
 
 export async function ensureDatabase(): Promise<void> {
@@ -22,32 +54,15 @@ export async function ensureDatabase(): Promise<void> {
     fs.mkdirSync(dir, { recursive: true });
   }
 
-  execSync("npx prisma migrate deploy", {
-    env: process.env,
-    stdio: "pipe",
-  });
+  runPrismaMigrateDeploy();
 
-  if (!fs.existsSync(dbPath)) return;
-
+  const prisma = createPrismaClient();
   try {
-    const { PrismaClient } = await import("@/lib/generated/prisma/client");
-    const { PrismaBetterSqlite3 } = await import(
-      "@prisma/adapter-better-sqlite3"
-    );
-    const adapter = new PrismaBetterSqlite3({
-      url: process.env.DATABASE_URL ?? "file:./dev.db",
-    });
-    const prisma = new PrismaClient({ adapter });
     const count = await prisma.category.count();
-    await prisma.$disconnect();
-
     if (count === 0) {
-      execSync("npx tsx prisma/seed.ts", {
-        env: process.env,
-        stdio: "pipe",
-      });
+      await seedDatabase(prisma);
     }
-  } catch {
-    // Tables may not exist yet on first run — migrate handles schema
+  } finally {
+    await prisma.$disconnect();
   }
 }

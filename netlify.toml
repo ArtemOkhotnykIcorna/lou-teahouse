@@ -3,3 +3,4 @@
 
 [build.environment]
   DATABASE_URL = "file:/tmp/lou-store.db"
+  HOME = "/tmp"

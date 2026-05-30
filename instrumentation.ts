@@ -1,6 +1,10 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
-    const { ensureDatabase } = await import("./lib/ensure-db");
-    await ensureDatabase();
+    try {
+      const { ensureDatabase } = await import("./lib/ensure-db");
+      await ensureDatabase();
+    } catch (error) {
+      console.error("Database initialization failed:", error);
+    }
   }
 }
