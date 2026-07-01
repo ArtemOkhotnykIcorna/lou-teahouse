@@ -43,6 +43,17 @@ export async function ensureDatabase(): Promise<void> {
     return;
   }
 
+  if (process.env.VERCEL) {
+    // On Vercel the deployed function's filesystem is read-only outside of
+    // /tmp, and any local sqlite file written during the build doesn't ship
+    // with the function bundle. Without Turso configured this would otherwise
+    // fail at runtime with a confusing EROFS/ENOENT error on first request.
+    throw new Error(
+      "TURSO_DATABASE_URL and TURSO_AUTH_TOKEN must be set in the Vercel project's " +
+        "Environment Variables. Local SQLite is only supported for local development."
+    );
+  }
+
   const dbPath = getLocalDatabaseUrl().replace(/^file:/, "");
   const dir = path.dirname(dbPath);
 
